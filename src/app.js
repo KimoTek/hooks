@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { hot } from "react-hot-loader";
 
 function Button() {
@@ -11,12 +11,48 @@ function Button() {
   );
 }
 
+function DataLoader(props) {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(response => response.json())
+      .then(data => setData(data));
+  }, []);
+
+  // Using render props to render the data. Alternatively use
+  /**
+   return (
+    <div>
+      <ul>
+        {data.map(el => (
+          <li key={el.id}>{el.title}</li>
+        ))}
+      </ul>
+    </div>
+   );
+  */
+  return props.render(data);
+}
+
 class App extends Component {
   render() {
     const { name } = this.props;
     return (
       <>
         <Button />
+        <DataLoader
+          render={data => {
+            return (
+              <div>
+                <ul>
+                  {data.map(el => (
+                    <li key={el.id}>{el.name}</li>
+                  ))}
+                </ul>
+              </div>
+            );
+          }}
+        />
         <div>Hello {name}</div>
       </>
     );
