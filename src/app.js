@@ -11,7 +11,17 @@ function Button() {
   );
 }
 
-function DataLoader(props) {
+function useFetch(url) {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch(url)
+      .then(response => response.json())
+      .then(data => setData(data));
+  }, []);
+  return data;
+}
+
+function DataLoaderA(props) {
   const [data, setData] = useState([]);
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -31,6 +41,12 @@ function DataLoader(props) {
     </div>
    );
   */
+  return props.render(data);
+}
+
+// Using a custom hooks
+function DataLoader(props) {
+  const data = useFetch("https://jsonplaceholder.typicode.com/users");
   return props.render(data);
 }
 
